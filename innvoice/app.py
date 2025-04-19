@@ -35,13 +35,13 @@ def generate_invoice():
         app.logger.info(f"Received data: {data}")  # Log the incoming data
         
         # Validate incoming data
-        required_fields = ['bill_to', 'address', 'phone', 'delivery_date_time', 'invoice_date', 'invoice_number', 'requirement_members', 'items']
+        required_fields = ['bill_to', 'address', 'phone', 'delivery_date_time', 'invoice_date', 'invoice_number', 'requirement_members', 'items', 'subtotal']
         for field in required_fields:
             if field not in data:
                 return jsonify({'success': False, 'error': f'Missing required field: {field}'}), 400
 
-        # Calculate totals
-        subtotal = sum(float(item.get('total', 0)) for item in data['items'])
+        # Use subtotal directly from input (not calculated from items)
+        subtotal = float(data['subtotal'])
         delivery_charge = float(data.get('delivery_charge', 0))
         advance = float(data.get('advance', 0))
         
@@ -374,8 +374,8 @@ def download_invoice():
     try:
         data = request.get_json()
         
-        # Calculate totals
-        subtotal = sum(float(item.get('total', 0)) for item in data['items'])
+        # Use subtotal directly from input (not calculated from items)
+        subtotal = float(data['subtotal'])
         delivery_charge = float(data.get('delivery_charge', 0))
         advance = float(data.get('advance', 0))
         
