@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Invoice Admin Panel</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total (AUD)</th>
+                    <th>Due (AUD)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.invoice_number }}</td>
+                    <td>{{ invoice.bill_to }}</td>
+                    <td>{{ invoice.invoice_date }}</td>
+                    <td>{{ "%.2f"|format(invoice.total_amount) }}</td>
+                    <td>{{ "%.2f"|format(invoice.due) }}</td>
+                    <td>
+                        <button onclick="viewInvoice('{{ invoice.invoice_number }}')">View</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function viewInvoice(invoiceNumber) {
+            window.location.href = `/invoice/${invoiceNumber}`;
+        }
+    </script>
+</body>
+</html>

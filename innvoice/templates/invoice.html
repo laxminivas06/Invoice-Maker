@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice {{ invoice_number }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .invoice-container, .invoice-container * {
+                visibility: visible;
+            }
+            .invoice-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container invoice-container">
+        <header class="invoice-header">
+            <img src="https://res.cloudinary.com/djxcl4jcy/image/upload/v1744973510/new_cgqoq1.svg" alt="Wisdom Roots Logo" class="logo">
+            <div class="invoice-title">
+                <h1>Wisdom Roots Invoice</h1>
+                <p>Invoice #{{ invoice_number }}</p>
+            </div>
+        </header>
+
+        <div class="invoice-details">
+            <div class="detail-row">
+                <span class="detail-label">Date:</span>
+                <span class="detail-value">{{ date }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Customer:</span>
+                <span class="detail-value">{{ customer_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Package:</span>
+                <span class="detail-value">{{ package_type }}</span>
+            </div>
+        </div>
+
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ package_type }} Package</td>
+                    <td>{{ persons }} persons</td>
+                    <td>${{ "%.2f"|format(price_per_person) }}</td>
+                    <td>${{ "%.2f"|format(total) }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="total-label">Total</td>
+                    <td class="total-value">${{ "%.2f"|format(total) }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        {% if notes %}
+        <div class="notes-section">
+            <h3>Notes:</h3>
+            <p>{{ notes }}</p>
+        </div>
+        {% endif %}
+
+        <div class="invoice-footer no-print">
+            <button onclick="window.print()">Print Invoice</button>
+            <button onclick="shareViaWhatsApp()">Share via WhatsApp</button>
+        </div>
+    </div>
+
+    <script>
+        function shareViaWhatsApp() {
+            const invoiceNumber = "{{ invoice_number }}";
+            const total = "{{ total }}";
+            const message = `Your Wisdom Roots Invoice #${invoiceNumber} for $${total} is ready.`;
+            const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
